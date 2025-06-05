@@ -487,24 +487,28 @@
                 `;
             }
 
-            const invoiceHTML = `
-                <div class="invoice-header">
-                    <h2>請 求 書</h2>
-                    <p>R${invoiceData.invoiceYear}年 ${invoiceData.invoiceMonth}月 ${currentDate}日</p>
-                </div>
+const invoiceHTML = `
+    <div class="invoice-header">
+        <h2>請 求 書</h2>
+        <p>R${invoiceData.invoiceYear}年 ${invoiceData.invoiceMonth}月 ${currentDate}日</p>
+    </div>
 
-                <div class="invoice-info">
-                    <div>
-                        <p><strong>${invoiceData.customerName} 様</strong></p>
-                        <p>下記のとおり請求申し上げます</p>
-                    </div>
-                    <div style="text-align: right;">
-                        <p>合同会社renge ショートステイSHUKUSAI</p>
-                        <p>住所：福岡県田川市大字伊田517-1</p>
-                        <p>電話番号：090-9495-5524（担当　中島勇太）</p>
-                        <p>または 0948-52-6675</p>
-                    </div>
-                </div>
+    <div class="invoice-info" style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div>
+            <p><strong>${invoiceData.customerName} 様</strong></p>
+            <p>下記のとおり請求申し上げます</p>
+        </div>
+        <div style="text-align: right; max-width: 300px;">
+            <p>合同会社renge ショートステイSHUKUSAI</p>
+            <p>住所：福岡県田川市大字伊田517-1</p>
+            <p>電話番号：090-9495-5524（担当　中島勇太）</p>
+            <p>または 0948-52-6675</p>
+        </div>
+        <div style="margin-left: 20px;">
+            <img src="inkan.png" alt="印鑑" style="width: 100px; height: auto;">
+        </div>
+    </div>
+
 
                 <div style="text-align: center; margin: 20px 0;">
                     <p style="font-size: 18px;"><strong>請求合計金額　¥${invoiceData.totalAmount.toLocaleString()}</strong></p>
