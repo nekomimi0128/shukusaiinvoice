@@ -769,4 +769,92 @@
 
                 <div class="total-section">
                     <p>合　計　¥${invoiceData.totalAmount.toLocaleString()}</p>
-                    <p style="margin-top: 10px; font-size:
+                    <p style="margin-top: 10px; font-size: 14px;">利用日：${invoiceData.usageDatesDisplay}日（${invoiceData.daysDiff}日間）</p>
+                </div>
+            `;
+
+            document.getElementById('invoicePreview').innerHTML = invoiceHTML;
+        }
+
+        function printInvoice() {
+            window.print();
+        }
+
+        function editInvoice() {
+            document.getElementById('previewSection').classList.add('hidden');
+            document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // チェックボックスと数量の連動処理
+        function setupCheckboxHandlers() {
+            const checkboxes = [
+                { checkbox: 'excludeUtilities', price: 'utilities', quantity: 'utilitiesQuantity' },
+                { checkbox: 'excludeBreakfast', price: 'breakfast', quantity: 'breakfastQuantity' },
+                { checkbox: 'excludeLunch', price: 'lunch', quantity: 'lunchQuantity' },
+                { checkbox: 'excludeDinner', price: 'dinner', quantity: 'dinnerQuantity' }
+            ];
+
+            checkboxes.forEach(({ checkbox, price, quantity }) => {
+                const checkboxEl = document.getElementById(checkbox);
+                const priceEl = document.getElementById(price);
+                const quantityEl = document.getElementById(quantity);
+
+                checkboxEl.addEventListener('change', function() {
+                    if (this.checked) {
+                        priceEl.value = '0';
+                        quantityEl.value = '0';
+                        priceEl.disabled = true;
+                        quantityEl.disabled = true;
+                        priceEl.style.opacity = '0.5';
+                        quantityEl.style.opacity = '0.5';
+                    } else {
+                        priceEl.disabled = false;
+                        quantityEl.disabled = false;
+                        priceEl.style.opacity = '1';
+                        quantityEl.style.opacity = '1';
+                    }
+                });
+            });
+        }
+
+        // 利用日数と数量の自動同期
+        function syncQuantitiesWithUsageDays() {
+            const usageDatesInput = document.getElementById('usageDates');
+            
+            usageDatesInput.addEventListener('input', function() {
+                const usageDatesStr = this.value.replace(/\s+/g, '');
+                const usageDatesArray = usageDatesStr.split(',').map(day => parseInt(day.trim())).filter(day => !isNaN(day) && day >= 1 && day <= 31);
+                const dayCount = usageDatesArray.length;
+
+                // 除外されていない項目の数量を利用日数に自動設定
+                if (!document.getElementById('excludeUtilities').checked) {
+                    document.getElementById('utilitiesQuantity').value = dayCount;
+                }
+                if (!document.getElementById('excludeBreakfast').checked) {
+                    document.getElementById('breakfastQuantity').value = dayCount;
+                }
+                if (!document.getElementById('excludeLunch').checked) {
+                    document.getElementById('lunchQuantity').value = dayCount;
+                }
+                if (!document.getElementById('excludeDinner').checked) {
+                    document.getElementById('dinnerQuantity').value = dayCount;
+                }
+            });
+        }
+
+        // 初期設定
+        window.onload = function() {
+            const today = new Date();
+            
+            // 現在の年月を自動設定
+            const reiwaYear = today.getFullYear() - 2018; // 令和元年は2019年
+            document.getElementById('invoiceYear').value = reiwaYear;
+            document.getElementById('invoiceMonth').value = (today.getMonth() + 1).toString();
+
+            // イベントハンドラーを設定
+            setupCheckboxHandlers();
+            syncQuantitiesWithUsageDays();
+        };
+    </script>
+</body>
+</html>
