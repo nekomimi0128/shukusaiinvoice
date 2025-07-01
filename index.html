@@ -655,7 +655,7 @@
                         <td>${itemNumber++}</td>
                         <td>${invoiceData.invoiceMonth}/${invoiceData.startDay}～${invoiceData.invoiceMonth}/${invoiceData.endDay}</td>
                         <td>光熱費</td>
-                        <td>${invoiceData.utilitiesQuantity}</td>
+                        <td>${invoiceData.utilitiesQuantity}日分</td>
                         <td>¥${invoiceData.utilities.toLocaleString()}</td>
                         <td>¥${(invoiceData.utilities * invoiceData.utilitiesQuantity).toLocaleString()}</td>
                     </tr>
@@ -668,7 +668,7 @@
                         <td>${itemNumber++}</td>
                         <td>${invoiceData.invoiceMonth}/${invoiceData.startDay}～${invoiceData.invoiceMonth}/${invoiceData.endDay}</td>
                         <td>朝食代</td>
-                        <td>${invoiceData.breakfastQuantity}</td>
+                        <td>${invoiceData.breakfastQuantity}日分</td>
                         <td>¥${invoiceData.breakfast.toLocaleString()}</td>
                         <td>¥${(invoiceData.breakfast * invoiceData.breakfastQuantity).toLocaleString()}</td>
                     </tr>
@@ -681,7 +681,7 @@
                         <td>${itemNumber++}</td>
                         <td>${invoiceData.invoiceMonth}/${invoiceData.startDay}～${invoiceData.invoiceMonth}/${invoiceData.endDay}</td>
                         <td>昼食代</td>
-                        <td>${invoiceData.lunchQuantity}</td>
+                        <td>${invoiceData.lunchQuantity}日分</td>
                         <td>¥${invoiceData.lunch.toLocaleString()}</td>
                         <td>¥${(invoiceData.lunch * invoiceData.lunchQuantity).toLocaleString()}</td>
                     </tr>
@@ -694,7 +694,7 @@
                         <td>${itemNumber++}</td>
                         <td>${invoiceData.invoiceMonth}/${invoiceData.startDay}～${invoiceData.invoiceMonth}/${invoiceData.endDay}</td>
                         <td>夕食代</td>
-                        <td>${invoiceData.dinnerQuantity}</td>
+                        <td>${invoiceData.dinnerQuantity}日分</td>
                         <td>¥${invoiceData.dinner.toLocaleString()}</td>
                         <td>¥${(invoiceData.dinner * invoiceData.dinnerQuantity).toLocaleString()}</td>
                     </tr>
