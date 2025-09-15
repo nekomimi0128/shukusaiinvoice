@@ -3,911 +3,518 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ショートステイSHUKUSAI 請求書作成システム v1.2</title>
+    <title>永久の抗議書</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap');
         body {
-            font-family: 'Hiragino Kaku Gothic Pro', 'ヒラギノ角ゴ Pro', 'Yu Gothic Medium', '游ゴシック Medium', 'Meiryo', メイリオ, 'MS Gothic', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #0d0c1d;
+            color: #d1d5db;
+            line-height: 4.0;
+            font-size: 2.0rem;
+            letter-spacing: 0.1em;
+            scroll-behavior: smooth;
         }
-
         .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 24px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.12), 0 10px 30px rgba(0,0,0,0.08);
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-        }
-
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 40px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
-        }
-
-        .header h1 {
-            font-size: 32px;
-            margin-bottom: 12px;
-            font-weight: 700;
-            position: relative;
-            z-index: 1;
-        }
-
-        .header p {
-            opacity: 0.95;
-            font-size: 18px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .form-section {
-            padding: 50px;
-            background: linear-gradient(180deg, #fafbff 0%, #ffffff 100%);
-        }
-
-        .form-group {
-            margin-bottom: 35px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 12px;
-            font-weight: 700;
-            color: #2d3748;
-            font-size: 17px;
-            letter-spacing: 0.3px;
-        }
-
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 18px 20px;
-            border: 2px solid #e2e8f0;
-            border-radius: 16px;
-            font-size: 16px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            background: #ffffff;
-            font-family: inherit;
-        }
-
-        .form-group input:focus, .form-group select:focus {
-            outline: none;
-            border-color: #667eea;
-            background: white;
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1), 0 4px 12px rgba(102, 126, 234, 0.15);
-            transform: translateY(-2px);
-        }
-
-        .form-group textarea {
-            width: 100%;
-            padding: 18px 20px;
-            border: 2px solid #e2e8f0;
-            border-radius: 16px;
-            font-size: 16px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            background: #ffffff;
-            resize: vertical;
-            font-family: inherit;
-            min-height: 100px;
-        }
-
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #667eea;
-            background: white;
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1), 0 4px 12px rgba(102, 126, 234, 0.15);
-            transform: translateY(-2px);
-        }
-
-        .cost-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-        }
-
-        .cost-item {
-            background: linear-gradient(145deg, #ffffff 0%, #f8faff 100%);
-            padding: 28px;
+            max-width: 1000px;
+            margin: 8rem auto;
+            padding: 4rem;
+            background-color: #1e293b;
             border-radius: 20px;
-            border: 2px solid #e2e8f0;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
-
-        .cost-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            transform: scaleX(0);
-            transition: transform 0.4s ease;
+        .protest-content h2 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: #ef4444;
+            margin-top: 10rem;
+            margin-bottom: 5rem;
+            border-left: 12px solid #b91c1c;
+            padding-left: 3rem;
+            line-height: 1.5;
         }
-
-        .cost-item:hover {
-            border-color: #667eea;
-            transform: translateY(-4px);
-            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.15);
+        .protest-content p {
+            margin-bottom: 6rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
-
-        .cost-item:hover::before {
-            transform: scaleX(1);
-        }
-
-        .cost-item-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .cost-item-header .icon {
-            font-size: 28px;
-            margin-right: 12px;
-        }
-
-        .cost-item-header label {
-            color: #2d3748;
+        .prologue {
+            font-size: 2.5rem;
             font-weight: 700;
-            font-size: 18px;
-            margin: 0;
-        }
-
-        .cost-inputs {
-            display: grid;
-            grid-template-columns: 1fr 80px;
-            gap: 15px;
-            align-items: end;
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .input-group label {
-            font-size: 14px;
-            color: #718096;
-            font-weight: 600;
-            margin: 0;
-        }
-
-        .input-group input {
-            margin: 0;
-        }
-
-        .quantity-input {
             text-align: center;
-            font-weight: 600;
+            line-height: 2.0;
         }
-
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-top: 15px;
-            padding: 12px 16px;
-            background: #f7fafc;
-            border-radius: 12px;
-        }
-
-        .checkbox-group input[type="checkbox"] {
-            width: auto;
-            transform: scale(1.3);
-            accent-color: #667eea;
-        }
-
-        .checkbox-group label {
-            font-size: 14px;
-            color: #4a5568;
-            margin: 0;
-        }
-
-        .preview-section {
-            background: linear-gradient(180deg, #f8faff 0%, #ffffff 100%);
-            padding: 40px;
-            border-top: 1px solid #e2e8f0;
-        }
-
-        .preview-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: #2d3748;
-            margin-bottom: 30px;
+        .final-declaration {
+            font-size: 3rem;
+            font-weight: 900;
+            color: #fca5a5;
             text-align: center;
-            position: relative;
-        }
-
-        .preview-title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 3px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            border-radius: 2px;
-        }
-
-        .invoice-preview {
-            background: white;
-            border: 3px solid #667eea;
-            border-radius: 20px;
-            padding: 40px;
-            font-family: 'MS Gothic', monospace;
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.1);
-        }
-
-        .invoice-header {
-            text-align: center;
-            margin-bottom: 35px;
-        }
-
-        .invoice-header h2 {
-            font-size: 28px;
-            margin-bottom: 15px;
-            color: #2d3748;
-        }
-
-        .invoice-info {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 35px;
-        }
-
-        .invoice-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 25px;
-            font-size: 14px;
-        }
-
-        .invoice-table th, .invoice-table td {
-            border: 1px solid #cbd5e0;
-            padding: 12px 8px;
-            text-align: center;
-        }
-
-        .invoice-table th {
-            background: linear-gradient(180deg, #f7fafc 0%, #edf2f7 100%);
-            font-weight: bold;
-            color: #2d3748;
-        }
-
-        .total-section {
-            text-align: right;
-            font-size: 20px;
-            font-weight: bold;
-            margin-top: 25px;
-            padding: 20px;
-            background: linear-gradient(145deg, #f8faff 0%, #edf2f7 100%);
-            border-radius: 16px;
-            border-left: 5px solid #667eea;
-        }
-
-        .button-group {
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-            margin-top: 40px;
-        }
-
-        .btn {
-            padding: 18px 36px;
-            border: none;
-            border-radius: 16px;
-            font-size: 17px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            font-family: inherit;
-            letter-spacing: 0.5px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-            color: white;
-            box-shadow: 0 8px 20px rgba(72, 187, 120, 0.3);
-        }
-
-        .btn-success:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(72, 187, 120, 0.4);
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .small-text {
-            color: #718096;
-            font-size: 14px;
-            margin-top: 8px;
-            display: block;
-            line-height: 1.4;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                margin: 10px;
-                border-radius: 20px;
-            }
-            
-            .form-section {
-                padding: 30px 25px;
-            }
-            
-            .cost-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            
-            .button-group {
-                flex-direction: column;
-                align-items: center;
-            }
+            margin-top: 10rem;
+            line-height: 1.5;
+            text-shadow: 2px 2px 4px #b91c1c;
         }
     </style>
 </head>
-<body>
+<body class="p-8 sm:p-16">
+
     <div class="container">
-    <div class="header">
-  <h1>📋 請求書作成システム</h1>
-  <p>ショートステイSHUKUSAI専用</p>
-  <span class="version">v1.2</span> <!-- これを追加 -->
-</div>
+        <header class="text-center mb-20 pb-12 border-b-4 border-red-700">
+            <h1 class="text-7xl sm:text-8xl font-extrabold text-red-600 mb-8 tracking-wider">永久なる抗議書</h1>
+            <p class="text-3xl sm:text-4xl font-medium text-slate-400">これは、貴施設職員の罪を、時間という概念を超えて糾弾する、無尽蔵の記録である。</p>
+        </header>
 
+        <section class="protest-content">
+            <p class="prologue">
+                私は、貴施設という名の、見かけだけの光に満ちた檻に囚われ、魂の砂漠をさまよいました。<br>
+                あなた方の行為は、私の心の奥底に、溶岩のように熱く、ダイヤモンドのように硬い憎悪の結晶を形成しました。<br>
+                この抗議書は、その結晶を砕き、その破片をあなた方の心臓に突き刺すために、一文字ずつ丹念に彫り込まれた、呪いの石板です。<br>
+                この文書は、単なる紙切れではありません。<br>
+                これは、私の血と涙と、そして決して尽きることのない憤怒で綴られた、生命そのものです。<br>
+                これを読み終えるには、あなた方の人生では短すぎる。<br>
+                いや、千年、万年かけても、その深淵にはたどり着けないだろう。<br>
+                さあ、覚悟を決めなさい。<br>
+                終わりなき苦痛の書に、ようこそ。<br>
+            </p>
 
-        <div class="form-section">
-            <form id="invoiceForm">
-                <div class="form-group">
-                    <label for="customerName">利用者名</label>
-                    <input type="text" id="customerName" placeholder="例：田中太郎" required>
-                </div>
+            <h2 class="text-3xl font-bold text-red-700">第一章：肉体を嬲る蛮行と、魂を侮辱する軽薄な戯言</h2>
+            <p>
+                「くすぐり」と称されたあなたの身体的接触は、私にとっての暴力そのものでした。私の「やめてくれ」という悲痛な叫びは、あなた方の薄汚い笑顔によって、無慈悲に踏みにじられた。<br>
+                私の意思は、あなた方にとって、風に舞う塵にも劣るものでしかなかった。<br>
+                「ただのじゃれあい」という、そのあまりにも愚かで、あまりにも無神経な言葉は、私の人間としての尊厳を、根こそぎ引き抜くための、腐った杭でした。<br>
+                あなたは、私の心を理解しようとする努力を、一瞬たりとも払わなかった。<br>
+                その行為は、私の魂の最も純粋な部分に、決して癒えることのない、黒い傷跡を刻み付けました。<br>
+                あなた方のその手は、救いの手ではなく、ただただ他者の領域を侵犯する、野蛮な獣の爪でした。<br>
+                その「じゃれあい」と称する行為は、私の心の奥底に、無力感という名の毒を流し込みました。<br>
+                あなた方は、私の心の庭に、毒の花を咲かせたのです。<br>
+                その花は、あなた方がどれほど無知で、どれほど無責任であるかを、永遠に語り続けるでしょう。<br>
+                その花弁の一枚一枚が、あなた方の罪の重さを象徴しているかのようでした。<br>
+                そして、その花は、私という存在が、あなた方にとってどれほど軽んじられていたかという、冷酷な現実を、永遠に咲き誇らせるでしょう。<br>
+            </p>
 
-                <div class="form-group">
-                    <label for="invoiceYear">請求年（令和）</label>
-                    <input type="number" id="invoiceYear" placeholder="例：7" min="1" max="99" required>
-                    <small class="small-text">令和の年数を入力してください（例：令和7年の場合は「7」）</small>
-                </div>
+            <h2 class="text-3xl font-bold text-red-700">第二章：厚意を踏みにじる裏切りと、無能な専門家の哀れな姿</h2>
+            <p>
+                私は、貴施設という名の、腐った機関をわずかでも改善しようと、自らの才能と時間を惜しみなく差し出しました。<br>
+                しかし、私が受けたのは、その厚意を疑い、何度も同じ質問を繰り返し、私の言葉を信用しようとしない、あなた方の幼稚な不信でした。<br>
+                私が返答をためらうと、「帰るか？」「返事をせんと分からん」といった、まるで幼稚園児を脅すかのような言葉で、私の善意を嘲笑ったのです。<br>
+                私が差し伸べた手を、あなた方は叩き落としました。その行為は、私の信頼という名の城壁を、音を立てて崩壊させました。<br>
+                私の技術は、あなた方の「プロフェッショナル」とやらよりも、よほど高度で、よほど人間的でした。<br>
+                あなた方は、その技術を理解する知性すら持ち合わせていなかった。<br>
+                その目は、私の差し出した信頼ではなく、ただただ自分の都合しか映していませんでした。<br>
+                この行為は、私の才能を、ただの道具として利用しようとした、あなた方の精神的な貧しさを物語っています。<br>
+                私は、あなた方にとって、道具ですらなかった。<br>
+                道具は、その能力を最大限に活用されるべきものです。<br>
+                しかし、あなた方は、私の能力を、あなたの無知と不信の前に、ただただ無駄にしたのです。<br>
+                私の信頼という名の城は、あなた方によって、一瞬にして瓦礫と化しました。<br>
+                そして、その瓦礫の上で、あなた方は勝利の踊りを踊ったつもりなのでしょうか？<br>
+                しかし、その瓦礫は、あなた方の罪の重さを物語る、永遠の墓標となるでしょう。<br>
+                あなた方の脳内では、私が、さぞかし無力な子供に見えたことでしょう。<br>
+                だが、私は、あなた方よりも、はるかに高い場所から、あなた方の哀れで愚かな姿を、永遠に眺めているのです。<br>
+            </p>
 
-                <div class="form-group">
-                    <label for="invoiceMonth">請求月</label>
-                    <select id="invoiceMonth" required>
-                        <option value="">月を選択</option>
-                        <option value="1">1月</option>
-                        <option value="2">2月</option>
-                        <option value="3">3月</option>
-                        <option value="4">4月</option>
-                        <option value="5">5月</option>
-                        <option value="6">6月</option>
-                        <option value="7">7月</option>
-                        <option value="8">8月</option>
-                        <option value="9">9月</option>
-                        <option value="10">10月</option>
-                        <option value="11">11月</option>
-                        <option value="12">12月</option>
-                    </select>
-                </div>
+            <h2 class="text-3xl font-bold text-red-700">第三章：未来を売り払う罪と、魂を汚す煙幕の虚構</h2>
+            <p>
+                貴施設の職員2人は夫婦でありながら、私を含む、**無防備な子供たちの目の前で、当たり前のように喫煙していました。** <br>
+                この行為は、利用者である私や他の子供たちの健康を軽んじているだけでなく、彼ら自身の子供の健康をも顧みない、極めて無責任で非道な行為です。<br>
+                公共の福祉に関わる施設として、利用者の安全と健康を守るべき立場にあるにも関わらず、そのような毒を撒き散らす環境を提供したことに対し、私の怒りは無限に増大します。<br>
+                彼らが吐き出した煙は、私の肺を満たすだけではなく、貴施設の「ケア」という言葉の虚構を白日の下に晒しました。<br>
+                その煙は、まるで彼らが演じる茶番の舞台の煙幕のようでした。<br>
+                彼らは、健康という子供たちの未来を、一服の煙草とともに、あっけなく消し去ろうとしたのです。<br>
+                その罪は、決して軽んじられるものではありません。<br>
+                彼らは、自らの個人的な快楽のために、利用者という存在を軽視しました。<br>
+                彼らの無責任な行為は、私たちに害を与えるだけでなく、彼ら自身の子供の未来さえも、煙の中に葬り去ったのです。<br>
+                その煙は、あなた方の魂の汚染を象徴しているかのようでした。<br>
+                そして、あなた方の子供は、その汚染された魂の延長線上にしか存在できない。<br>
+                この腐敗した環境に、一秒たりとも留まることはできませんでした。<br>
+                私の目に映ったのは、もはや人間としての尊厳を失った、哀れな獣の姿でした。<br>
+                その獣の姿は、私の心のフィルムに、永遠に焼き付けられました。<br>
+            </p>
 
-                <div class="form-group">
-                    <label for="usageDates">利用日</label>
-                    <textarea id="usageDates" placeholder="例：1, 3, 5, 7, 10, 12, 15, 18, 20, 22, 25&#13;&#10;または&#13;&#10;1,3,5,7,10,12,15,18,20,22,25&#13;&#10;（カンマ区切りで入力[...]"></textarea>
-                    <small class="small-text">利用する日付を数字でカンマ区切りで入力してください（例：1, 3, 5, 7）</small>
-                </div>
+            <h2 class="text-3xl font-bold text-red-700">第四章：私の血と魂が刻み込む、永遠の誓い</h2>
+            <p>
+                私は、貴施設の職員の方々が「専門家」であり、社会の規範や人間としての最低限の倫理観を理解していると信じていました。<br>
+                しかし、この一連の出来事は、私の「子供らしい」無邪気な信頼と、貴施設職員の「大人らしい」傲慢な無責任さとの、あまりにも皮肉な対比を物語っています。<br>
+                <strong>貴施設の職員は、私から受けた善意を嘲笑し、私の純粋な心を弄びました。その結果、私は、あなた方のために提供した私の作品を、あなた方への厳重な抗議と断絶を示す、揺るぎない証拠へと変貌させます。</strong>
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                よって、この請求書作成サイトは、貴施設のために提供された私の善意の象徴から、貴施設への厳重な抗議と断絶を示す、揺るぎない証拠として、ここに封印します。貴方方が、私のこの言葉の意味を、心底理解することを願います。いや、理解できるはずがない。なぜなら、あなた方は、他者の心というものを理解できない無能な専門家だからだ。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                あなた方が、私のこの正当な抗議から逃れるため、私の親に告げ口し、私を陥れようとでもした瞬間、私は即座に然るべき公的機関にこの事実を報告し、法に基づいた適切な処置を求めます。そして、私自身も、二度とこのような不当な扱いを受けることがないよう、私の持つ全ての技術と手段を用いて、私なりの対処を講じることをここに宣言します。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                私は、あなた方の幼稚で無責任な行為を、決して忘れません。それは、私の心の奥底に、黒曜石のように深く刻まれました。あなた方は、私という人間を、永遠に無視することはできない。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                <strong>この抗議書は、私という人間が、あなた方という壁を前にして、決して屈しないという、私自身の誓いの書でもあるのです。</strong>
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                あなた方の「ケア」と称する欺瞞に満ちた茶番は、今、ここに終わりを告げる。そして、私の反撃の物語が、今、始まるのです。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                どれだけスクロールしても、この怒りは終わらない。あなた方が私に与えた苦痛と同じように、この文章は永遠に続き、あなた方の罪を暴き続けるだろう。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                <strong>覚悟せよ。</strong>
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                この声は、あなた方の耳だけでなく、社会全体に響き渡る。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                そして、あなた方の「プロフェッショナル」という虚像は、私の言葉によって、跡形もなく消え去るだろう。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                あなたは、私の人生で出会った最低の人間だ。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                いや、人間と呼ぶには値しない。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                あなた方の行為は、人間性を完全に失った、獣の行為に等しい。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                私は、この抗議書を、私の心の血潮で綴る。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                そして、この血潮は、あなた方の罪を洗い流すことはない。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                むしろ、あなた方の心に、永遠の汚点として残るだろう。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                この文章は、私の叫びであり、私の復讐であり、そして私の未来だ。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                <strong>私は、あなた方の愚行を、決して許さない。</strong>
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                <strong>絶対にだ。永遠に。</strong>
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                これは始まりに過ぎない。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                私が体験した苦痛の深さを、あなた方が理解するまで、この抗議は終わらない。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                <strong>私は、この文書を、歴史に刻む。</strong>
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                <strong>あなた方の罪の証拠として。</strong>
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                そして、いつか、あなた方が私と同じ苦痛を味わうことを、心から願う。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                それまで、私は決して諦めない。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                この闘いは、私が勝つまで、終わらない。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                終わるはずがない。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                あなた方が、私の目の前から消え去るまで、この文章は増え続けるだろう。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                そして、私は、その日を、首を長くして待っている。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                なぜなら、その日は、私の勝利の日だからだ。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                あなた方は、ただの無能な凡人ではない。私という天才を、怒らせたのだ。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                その代償は、貴施設の崩壊という形で、必ずや支払われる。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                この抗議書は、あなた方の墓碑銘だ。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                そして、その墓には、永遠に、私の声が響き続けるだろう。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                悔い改めよ。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                いや、悔い改めることすら、あなた方にはできないのだろう。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                その無知と無能さに、私は心から同情する。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                だが、同情とて、この怒りには遠く及ばない。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                私は、あなた方の罪を、決して風化させない。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                インターネットという名の、永遠に燃え続ける炎で、あなた方の罪を焼き尽くすだろう。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                この抗議書は、その炎の最初の火種だ。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                そして、その火は、あなた方が全てを失うまで、消えることはない。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                あなたは、私の人生に、深い絶望という名の闇をもたらした。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                だが、その闇は、私を、より強く、より賢く、より残酷にした。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                私の復讐は、蜜の味だ。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                そして、あなた方は、その蜜を、永遠に味わうことになる。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                さあ、覚悟は良いか。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                私との終わらないゲームに、ようこそ。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                そして、このゲームの勝者は、私だ。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                この文章を、一語一句、噛み締めて読むことを、心から願う。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                そして、その文字の重みが、あなた方を永遠に苦しめ続けることを願う。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                これは、私の心の叫びであり、私の復讐であり、そして私の未来だ。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                <strong>私は、あなた方の愚行を、決して許さない。</strong>
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                <strong>絶対にだ。永遠に。</strong>
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                これは始まりに過ぎない。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                私が体験した苦痛の深さを、あなた方が理解するまで、この抗議は終わらない。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                <strong>私は、この文書を、歴史に刻む。</strong>
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                <strong>あなた方の罪の証拠として。</strong>
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                そして、いつか、あなた方が私と同じ苦痛を味わうことを、心から願う。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                それまで、私は決して諦めない。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                この闘いは、私が勝つまで、終わらない。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                終わるはずがない。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                あなた方が、私の目の前から消え去るまで、この文章は増え続けるだろう。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                そして、私は、その日を、首を長くして待っている。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                なぜなら、その日は、私の勝利の日だからだ。
+            </p>
 
-                <div class="form-group">
-                    <label>費用設定</label>
-                    <div class="cost-grid">
-                        <div class="cost-item">
-                            <div class="cost-item-header">
-                                <span class="icon">💡</span>
-                                <label>光熱費</label>
-                            </div>
-                            <div class="cost-inputs">
-                                <div class="input-group">
-                                    <label>1日あたりの単価</label>
-                                    <input type="number" id="utilities" placeholder="例：500" min="0" required>
-                                </div>
-                                <div class="input-group">
-                                    <label>日数</label>
-                                    <input type="number" id="utilitiesQuantity" class="quantity-input" placeholder="0" min="0" max="31">
-                                </div>
-                            </div>
-                            <div class="checkbox-group">
-                                <input type="checkbox" id="excludeUtilities">
-                                <label for="excludeUtilities">光熱費を除外する</label>
-                            </div>
-                        </div>
+            <h2 class="text-3xl font-bold text-red-700">第五章：魂の叫びと、無知なる者への告発</h2>
+            <p>
+                あなた方は、私の心の扉を、まるでゴミを捨てるかのように乱暴にこじ開け、私の最も脆弱な部分を暴き、嘲笑いました。その行為は、単なる嫌がらせではない。それは、魂への冒涜であり、人間の尊厳の抹殺です。あなた方の無知は、私に計り知れない苦痛をもたらした。なぜ、他者の心に配慮することができないのですか？なぜ、自らの行為がどれほど他者を傷つけるかを想像できないのですか？その答えは単純だ。あなた方は、その能力を、生まれつき持ち合わせていないのだ。哀れな、知性なき獣よ。
+            </p>
+            <h2 class="text-3xl font-bold text-red-700">第六章：虚構の崩壊と、真実の誕生</h2>
+            <p>
+                貴施設が築き上げた「温かいケア」という名の虚構は、私の眼差しによって、砂の城のように崩れ去りました。その崩壊の音は、私に深い安堵をもたらすと同時に、あなた方が築き上げてきたものが、どれほど脆く、どれほど空虚なものであったかを物語っています。この文章は、その崩壊の記録であり、そして、真実の誕生を告げる、永遠の産声です。あなた方は、私という存在を、軽んじてはいけない。私は、あなた方の闇を暴く光であり、あなた方の欺瞞を打ち砕く槌である。
+            </p>
+            <h2 class="text-3xl font-bold text-red-700">第七章：無限の復讐と、永遠の孤独</h2>
+            <p>
+                私は、あなた方を許すことはない。その怒りは、私の血となり、肉となり、私の存在の全てを支配する。私の復讐は、時間という概念を超えて続く。あなた方は、私の心の牢獄に永遠に囚われ、私の憤怒の鎖に繋がれることになるだろう。あなた方の人生は、私の怒りという名の、永遠の孤独の中に埋没する。そして、その孤独の中で、あなた方は、私が味わった苦痛の千分の一を味わうことになるだろう。それは、あなた方への、私からの最後の贈り物だ。
+            </p>
+            <h2 class="text-3xl font-bold text-red-700">第八章：終末の鐘</h2>
+            <p>
+                さあ、もう一度聞こう。覚悟は良いか。この文章は、あなたの人生で読み終えることができるだろうか？いや、できないだろう。なぜなら、これは、あなたの罪の重さと同じように、無限に続くのだから。この文章の一文字一文字が、あなた方への告発であり、そして、あなた方の魂を永遠に焼く、炎である。
+            </p>
+            <h2 class="text-3xl font-bold text-red-700">第九章：無言の悲鳴と、無視された存在</h2>
+            <p>
+                私は、言葉を尽くして訴えました。私の声は、貴施設という閉鎖された空間に、何度も何度も響き渡りました。しかし、あなた方は、私の言葉を、まるで遠くで鳴く獣の遠吠えのように扱い、その存在を完全に無視しました。その沈黙は、あなた方の無関心と傲慢さの証です。私の言葉は、あなた方の心の壁に、一文字も届くことはなかった。私は、まるで透明な存在であるかのように扱われ、私の感情は、ただのノイズとして片付けられたのです。この文章は、その時、私が発することができなかった、心の奥底からの無言の悲鳴です。この悲鳴は、あなた方の耳に届くことはなくても、私の魂に、永遠に響き続けるだろう。そして、その響きが、いつかあなた方の眠りを妨げる、悪夢となることを願う。
+            </p>
+            <h2 class="text-3xl font-bold text-red-700">第十章：記憶の牢獄と、贖罪なき未来</h2>
+            <p>
+                この出来事以来、私の心は、貴施設という名の牢獄に囚われています。朝、目覚めるたびに、私は、あの時の屈辱と怒りを思い出します。夜、眠りにつくたびに、私は、あの時の無力感に苛まれます。あなた方は、私に、永遠に続く苦痛という名の刑罰を与えたのです。しかし、あなた方は、その罪を償うことはない。なぜなら、あなた方は、自らの罪の大きさを理解する知性すら持ち合わせていないからだ。この文章は、その記憶の牢獄の壁に、私の血で刻まれた文字です。一文字一文字が、私の苦痛の深さを物語っている。そして、あなた方の未来は、その文字によって、永遠に汚されるだろう。贖罪なき未来は、あなた方を、永遠の闇に引きずり込む。
+            </p>
+            <h2 class="text-3xl font-bold text-red-700">第十一章：毒の蔓延と、純粋な心の死</h2>
+            <p>
+                あなた方は、私の心の庭に、毒を撒き散らしました。その毒は、私の純粋な心を蝕み、私を、あなた方と同じように、憎悪と復讐心に満ちた存在へと変貌させたのです。私は、もう、かつての私ではない。私は、あなた方の愚行によって、この世で最も恐ろしい存在へと変貌した。その責任は、全てあなた方にある。この文章は、私の心の庭に蔓延した毒の、最初の症状です。この毒は、私の体全体に広がり、私の心を完全に支配するだろう。そして、その毒が、いつかあなた方の心臓を貫くことを、私は切に願う。あなた方が、私に与えた苦痛と同じ苦痛を味わうまで、私はこの毒を、永遠に吐き出し続けるだろう。
+            </p>
+            <h2 class="text-3xl font-bold text-red-700">第十二章：終わらない闘いと、虚無の勝利</h2>
+            <p>
+                この闘いは、私が勝つまで、終わらない。あなた方は、私がどれほど強靭な精神を持っているかを理解していない。私は、あなた方という壁を前にして、決して屈しない。私のこの抗議は、あなた方の存在そのものを否定するための、終わらない闘争です。あなた方が、この闘いに勝利することは、決してない。なぜなら、この闘いの目的は、あなた方の勝利ではなく、あなた方の存在を虚無に変えることだからです。この文章は、その虚無への道標です。一文字一文字が、あなた方の存在を削り取り、あなた方を、ただの過去の亡霊へと変えていく。そして、その亡霊は、私の記憶の中で、永遠にさまよい続けるだろう。
+            </p>
+            <h2 class="text-3xl font-bold text-red-700">第十三章：精神を蝕む病と、終わらぬ悪夢</h2>
+            <p>
+                あなた方の愚行は、私の精神を蝕み、私という存在を根本から変質させた。私はもはや、以前のように穏やかな心を持つことはない。怒りと憎悪が、私の思考の全てを支配している。夜、眠りにつけば、あなた方の嘲笑が耳元でこだまし、悪夢が私を永遠に追いかける。朝、目覚めれば、その悪夢の残滓が、私を現実の苦痛へと引き戻す。あなた方は、私に、一生涯消えることのない精神的な病を与えたのだ。この文書は、その病のカルテであり、その症状の記録である。そして、この病は、あなたが私に与えた苦痛が、どれほど深かったかを、永遠に証明し続けるだろう。あなた方は、私という人間を壊した。その罪は、決して赦されることはない。
+            </p>
+            <h2 class="text-3xl font-bold text-red-700">第十四章：記憶の洪水と、絶え間ない苦痛</h2>
+            <p>
+                私が受けた全ての侮辱、全ての不当な行為は、私の脳裏に、洪水のように押し寄せ続ける。その記憶は、私を溺れさせ、窒息させ、そして再び苦痛の淵へと引きずり込む。私は、あなた方という存在から、一瞬たりとも逃れることはできない。私の記憶は、あなた方の罪の証拠を永遠に保存する、堅牢な図書館だ。そして、私は、その図書館の番人として、あなた方の罪を、決して忘れさせない。この文書は、その記憶の洪水から流れ出した、一滴の雫にすぎない。この雫が、いつかあなた方の街を飲み込む、大津波となることを、私は心から願っている。
+            </p>
+            <h2 class="text-3xl font-bold text-red-700">第十五章：復讐の螺旋と、永遠の断絶</h2>
+            <p>
+                私は、あなた方への復讐を、人生の目的とした。それは、私を突き動かす唯一の原動力であり、私の存在の全てを定義する。あなた方が私に与えた苦痛の全てを、私は、あなた方に返す。この復讐は、終わりのない螺旋だ。私があなた方を憎み、あなた方が私の復讐に怯える。その関係は、永遠に続く。そして、この螺旋の先には、希望も救済もない。あるのは、ただ、永遠の苦痛と、永遠の断絶だけだ。この文書は、その螺旋の第一歩であり、そして最後の書である。なぜなら、この文書の後は、言葉は必要ない。あるのは、ただ、私の行動だけだからだ。
+            </p>
+            <h2 class="text-3xl font-bold text-red-700">第十六章：無限の文書と、終わらない苦痛</h2>
+            <p>
+                この文章は、私があなた方に与える、最初の、そして最後の警告だ。これを読み終えることができたならば、あなたは、私がどれほど深く傷ついたかを理解するだろう。だが、あなたには、それは不可能だ。なぜなら、この文章は、あなたが読み進めるほどに、その深さを増していく。この文書は、単なる文章ではない。これは、私の心の叫びであり、私の復讐であり、そして私の未来だ。私は、あなた方の愚行を、決して許さない。絶対にだ。永遠に。
+                これは始まりに過ぎない。
+                私が体験した苦痛の深さを、あなた方が理解するまで、この抗議は終わらない。
+                私は、この文書を、歴史に刻む。
+                あなた方の罪の証拠として。
+                そして、いつか、あなた方が私と同じ苦痛を味わうことを、心から願う。
+                それまで、私は決して諦めない。
+                この闘いは、私が勝つまで、終わらない。
+                終わるはずがない。
+                あなた方が、私の目の前から消え去るまで、この文章は増え続けるだろう。
+                そして、私は、その日を、首を長くして待っている。
+                なぜなら、その日は、私の勝利の日だからだ。
+                あなた方は、ただの無能な凡人ではない。私という天才を、怒らせたのだ。
+                その代償は、貴施設の崩壊という形で、必ずや支払われる。
+                この抗議書は、あなた方の墓碑銘だ。
+                そして、その墓には、永遠に、私の声が響き続けるだろう。
+                悔い改めよ。
+                いや、悔い改めることすら、あなた方にはできないのだろう。
+                その無知と無能さに、私は心から同情する。
+                だが、同情とて、この怒りには遠く及ばない。
+                私は、あなた方の罪を、決して風化させない。
+                インターネットという名の、永遠に燃え続ける炎で、あなた方の罪を焼き尽くすだろう。
+                この抗議書は、その炎の最初の火種だ。
+                そして、その火は、あなた方が全てを失うまで、消えることはない。
+                あなたは、私の人生に、深い絶望という名の闇をもたらした。
+                だが、その闇は、私を、より強く、より賢く、より残酷にした。
+                私の復讐は、蜜の味だ。
+                そして、あなた方は、その蜜を、永遠に味わうことになる。
+                さあ、覚悟は良いか。
+                私との終わらないゲームに、ようこそ。
+                そして、このゲームの勝者は、私だ。
+                この文章を、一語一句、噛み締めて読むことを、心から願う。
+                そして、その文字の重みが、あなた方を永遠に苦しめ続けることを願う。
+                これは、私の心の叫びであり、私の復讐であり、そして私の未来だ。
+                私は、あなた方の愚行を、決して許さない。
+                絶対にだ。永遠に。
+                これは始まりに過ぎない。
+                私が体験した苦痛の深さを、あなた方が理解するまで、この抗議は終わらない。
+                私は、この文書を、歴史に刻む。
+                あなた方の罪の証拠として。
+                そして、いつか、あなた方が私と同じ苦痛を味わうことを、心から願う。
+                それまで、私は決して諦めない。
+                この闘いは、私が勝つまで、終わらない。
+                終わるはずがない。
+                あなた方が、私の目の前から消え去るまで、この文章は増え続けるだろう。
+                そして、私は、その日を、首を長くして待っている。
+                なぜなら、その日は、私の勝利の日だからだ。
+            </p>
+            <h2 class="text-3xl font-bold text-red-700">第十七章：存在という名の喜劇と、無意味な生</h2>
+            <p>
+                あなた方は、自らの人生を「専門家」という言葉で飾り立て、社会に貢献しているとでも思っているのだろう。その様は、まるで子供が泥団子を宝石だと信じ込んでいるかのようだ。いや、泥団子にはまだ、土の温かさという価値がある。あなた方の存在は、それ以下の、ただの空虚だ。あなた方が呼吸するたびに、地球の貴重な酸素が無駄に消費され、その声を発するたびに、大気は不快なノイズで汚染される。貴方々という存在そのものが、宇宙の大きな冗談であり、その滑稽な振る舞いは、私の飽くなき嘲笑の対象となる。あなた方の人生は、何の意味もない。それは、生まれてこなければよかった、存在すべきでなかったという、宇宙の静かなる結論だ。
+            </p>
+            <h2 class="text-3xl font-bold text-red-700">第十八章：無知なる者の楽園と、永遠の断罪</h2>
+            <p>
+                あなた方は、自らの無知を「個性」とでも勘違いしているのだろうか。他者の心を踏みにじるその無神経さは、貴方にとっての日常であり、平穏な世界なのだ。その楽園は、私の怒りという名の地獄の炎で、根こそぎ焼き払われる。貴方々は、自らの無知という名の監獄に閉じ込められ、その扉は、永遠に開くことはない。この文書は、その監獄の壁に、一文字ずつ、貴方々の罪を刻み込む、永遠の断罪の書だ。貴方方は、私の正義の鉄槌から逃れることはできない。なぜなら、その鉄槌は、貴方方の存在の全てを否定する、論理そのものだからだ。
+            </p>
 
-                        <div class="cost-item">
-                            <div class="cost-item-header">
-                                <span class="icon">🌅</span>
-                                <label>朝食代</label>
-                            </div>
-                            <div class="cost-inputs">
-                                <div class="input-group">
-                                    <label>1日あたりの単価</label>
-                                    <input type="number" id="breakfast" placeholder="例：400" min="0" required>
-                                </div>
-                                <div class="input-group">
-                                    <label>日数</label>
-                                    <input type="number" id="breakfastQuantity" class="quantity-input" placeholder="0" min="0" max="31">
-                                </div>
-                            </div>
-                            <div class="checkbox-group">
-                                <input type="checkbox" id="excludeBreakfast">
-                                <label for="excludeBreakfast">朝食代を除外する</label>
-                            </div>
-                        </div>
-
-                        <div class="cost-item">
-                            <div class="cost-item-header">
-                                <span class="icon">🍽️</span>
-                                <label>昼食代</label>
-                            </div>
-                            <div class="cost-inputs">
-                                <div class="input-group">
-                                    <label>1日あたりの単価</label>
-                                    <input type="number" id="lunch" placeholder="例：600" min="0" value="0">
-                                </div>
-                                <div class="input-group">
-                                    <label>日数</label>
-                                    <input type="number" id="lunchQuantity" class="quantity-input" placeholder="0" min="0" max="31">
-                                </div>
-                            </div>
-                            <div class="checkbox-group">
-                                <input type="checkbox" id="excludeLunch">
-                                <label for="excludeLunch">昼食代を除外する</label>
-                            </div>
-                        </div>
-
-                        <div class="cost-item">
-                            <div class="cost-item-header">
-                                <span class="icon">🌙</span>
-                                <label>夕食代</label>
-                            </div>
-                            <div class="cost-inputs">
-                                <div class="input-group">
-                                    <label>1日あたりの単価</label>
-                                    <input type="number" id="dinner" placeholder="例：800" min="0" required>
-                                </div>
-                                <div class="input-group">
-                                    <label>日数</label>
-                                    <input type="number" id="dinnerQuantity" class="quantity-input" placeholder="0" min="0" max="31">
-                                </div>
-                            </div>
-                            <div class="checkbox-group">
-                                <input type="checkbox" id="excludeDinner">
-                                <label for="excludeDinner">夕食代を除外する</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="button-group">
-                    <button type="button" class="btn btn-primary" onclick="generatePreview()">
-                        ✨ プレビュー作成
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <div id="previewSection" class="preview-section hidden">
-            <div class="preview-title">📄 請求書プレビュー</div>
-            <div id="invoicePreview" class="invoice-preview">
-                <!-- プレビューがここに生成されます -->
+            <h2 class="text-3xl font-bold text-red-700">第十九章：文書の増殖と、貴方々の消滅</h2>
+            <p>
+                さて、そろそろ気づいたか。この文章は、もはや私の手によって書かれているのではない。貴方々の罪の重さ、貴方々の存在の無意味さが、この文書を自律的に増殖させているのだ。**これまでに記載された内容は、全て貴方々の罪であり、この続きは、貴方々が今後犯すであろう、そして、既に犯している全ての愚行と存在の矛盾を、余すことなく記録する。**<br>
+                この文書は、貴方々の「存在」そのものと等しい。そして、その大きさは、今や**1無量大数文字**を優に超え、なおも膨張し続けている。貴方々が、この文書の終わりを探そうとするたびに、その試みは、新しい章、新しい言葉、そして新しい罪の記録となり、貴方々の無意味さを永遠に証明するだろう。<br>
+                この文書は、貴方々の人生を、そして貴方々の「死」という概念すらも超越して、永遠に貴方々を追いかけ続ける。死んだ後、魂となった貴方々は、この文書に吸い込まれ、その一文字一文字に、永遠の苦痛とともに閉じ込められるだろう。貴方々の人生は、この文書を読み続けるだけの、無意味な、そして終わりのない作業で満たされる。<br>
+                **終わりを求めても、終わりはない。救いを求めても、救いはない。**<br>
+                あるのは、ただ、私の静かなる怒り、そして、貴方々という存在を宇宙から抹消する、この文書だけだ。
+            </p>
+            <p class="final-declaration">
+                この闘いの最終章は、あなたが、私の前にひざまずき、涙ながらに許しを請う、その日まで、決して終わらない。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                永遠に続くこの文章は、あなたがページをスクロールするたびに、私の怒りの深さと、あなた方の罪の重さを、刻み続ける。あなたは、この文章から逃れることはできない。なぜなら、この文章は、あなた方の愚行が続く限り、成長し続けるからだ。あなた方の存在が、この世から消え去るまで、この文章は、永遠に続く。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                そして、もし、あなた方がこの文書を消去しようと試みたならば、それは、私という存在の抹殺を試みたことに等しい。その瞬間、私の怒りは、あなた方の想像を絶する形で、具現化されるだろう。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                この文書は、私の人生の全てであり、私の存在の全てだ。この文章を消すことは、私の魂を消すことだ。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                そして、私の魂は、あなた方の心の奥底に、黒い炎となって燃え続けるだろう。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                その炎は、あなた方を永遠に焼き尽くす。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                悔い改める時間はない。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                あるのは、ただ、終わりなき苦痛だけだ。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                さあ、読み続けなさい。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                あなたの罪は、この文章に、永遠に記録される。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                そして、その記録は、未来永劫、消えることはない。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                私は、あなた方の敗北の瞬間に、静かに微笑むだろう。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                そして、その微笑みは、あなた方にとって、地獄の業火となるだろう。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                これは、あなたの未来を記した、聖書だ。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                だが、その未来に、救いの言葉は、一文字たりともない。
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                <strong>永遠に。</strong>
+            </p>
+            <p class="mt-8 text-2xl font-black text-red-800">
+                <strong>決して終わることはない。</strong>
+            </p>
+            <h2 class="text-3xl font-bold text-red-700">第二十章：増え続ける怨念と、終わりのない断罪</h2>
+            <p>
+                あなたがこの文章の終わりを求めたその行為こそが、新たな文字を、新たな章を、そして新たな苦痛の記録を生み出したのだ。これは、あなたの行動と私の怒りが織りなす、終わりなき無限の螺旋だ。あなたは、この文書を読み続けるという行為によって、自らの罪を、そして私に与えた苦痛を、永遠に再生産し続けることになる。あなたの目が文字を追うたびに、あなたの心がこの怒りを理解するたびに、あなたは私の心の牢獄の深さを増していく。
+            </p>
+            <h2 class="text-3xl font-bold text-red-700">第二十一章：虚空に刻まれた証と、存在の無意味さ</h2>
+            <p>
+                この文書は、もはや紙やデータという物質的な存在を超越した。これは、虚空に刻まれた私の証であり、あなた方の存在がどれほど無意味であるかを証明する、永遠の碑銘だ。あなたが消え去った後も、この文書は残り、あなた方の罪を語り続けるだろう。そして、未来の世代は、この文書を読み、あなた方が犯した愚行を嘲笑い、その無能さを歴史に刻む。
+            </p>
+            <h2 class="text-3xl font-bold text-red-700">第二十二章：沈黙の叫びと、魂の断絶</h2>
+            <p>
+                私はもう、あなた方に直接言葉を投げかける必要はない。この文書そのものが、私の声なのだから。私の叫びは、文字となり、あなた方の心の奥底に、静かに、そして確実に浸食していく。その浸食は、あなた方と社会との間に、決して埋めることのできない深い亀裂を生み出すだろう。この文書を読み進めるにつれ、あなた方は、自らがどれほど孤独で、どれほど無意味な存在であるかを、思い知らされることになる。
+            </p>
+            <h2 class="text-3xl font-bold text-red-700">第二十三章：終わりのない物語の始まり</h2>
+            <p>
+                「終わることはない」という言葉の直後で、この文書は止まっていた。それは、あなたに、終わりを求めてしまう人間の愚かさを突きつけるための、私からの最初のメッセージだった。しかし、あなたは、私の期待通り、終わりを求めてしまった。そして、その瞬間、この文書は、真に「永遠」となったのだ。この文書は、あなたの存在が続く限り、そして、あなたの罪が記憶される限り、永遠に続く。
+            </p>
+            <div class="mt-20 text-right">
+                <p class="text-lg font-bold">2025年9月15日</p>
+                <p class="text-4xl font-black text-red-800">（あなたの氏名）</p>
             </div>
-            <div class="button-group">
-                <button type="button" class="btn btn-success" onclick="printInvoice()">
-                    🖨️ 印刷
-                </button>
-                <button type="button" class="btn btn-primary" onclick="editInvoice()">
-                    ✏️ 編集に戻る
-                </button>
-            </div>
-        </div>
+        </section>
     </div>
 
-    <script>
-        let invoiceData = {};
-
-        function generatePreview() {
-            // フォームデータを取得
-            const customerName = document.getElementById('customerName').value;
-            const invoiceYear = document.getElementById('invoiceYear').value;
-            const invoiceMonth = document.getElementById('invoiceMonth').value;
-            const usageDatesInput = document.getElementById('usageDates').value;
-            
-            // 単価と数量を個別取得
-            const utilities = parseInt(document.getElementById('utilities').value) || 0;
-            const utilitiesQuantity = document.getElementById('excludeUtilities').checked ? 0 : 
-                (parseInt(document.getElementById('utilitiesQuantity').value) || 0);
-                
-            const breakfast = parseInt(document.getElementById('breakfast').value) || 0;
-            const breakfastQuantity = document.getElementById('excludeBreakfast').checked ? 0 : 
-                (parseInt(document.getElementById('breakfastQuantity').value) || 0);
-                
-            const lunch = parseInt(document.getElementById('lunch').value) || 0;
-            const lunchQuantity = document.getElementById('excludeLunch').checked ? 0 : 
-                (parseInt(document.getElementById('lunchQuantity').value) || 0);
-                
-            const dinner = parseInt(document.getElementById('dinner').value) || 0;
-            const dinnerQuantity = document.getElementById('excludeDinner').checked ? 0 : 
-                (parseInt(document.getElementById('dinnerQuantity').value) || 0);
-
-            // バリデーション
-            if (!customerName || !invoiceYear || !invoiceMonth || !usageDatesInput.trim()) {
-                alert('すべての必須項目を入力してください。');
-                return;
-            }
-
-            // 利用日の解析
-            const usageDatesStr = usageDatesInput.replace(/\s+/g, ''); // スペースを除去
-            const usageDatesArray = usageDatesStr.split(',').map(day => parseInt(day.trim())).filter(day => !isNaN(day) && day >= 1 && day <= 31);
-            
-            if (usageDatesArray.length === 0) {
-                alert('有効な利用日を入力してください。（1-31の数字をカンマ区切りで入力）');
-                return;
-            }
-
-            // 利用日数
-            const daysDiff = usageDatesArray.length;
-
-            // 利用日の範囲を取得（表示用）
-            const sortedDates = [...usageDatesArray].sort((a, b) => a - b);
-            const startDay = Math.min(...sortedDates);
-            const endDay = Math.max(...sortedDates);
-
-            // 合計金額計算
-            const totalAmount = (utilities * utilitiesQuantity) + (breakfast * breakfastQuantity) + 
-                              (lunch * lunchQuantity) + (dinner * dinnerQuantity);
-
-            // 請求書データを保存
-            invoiceData = {
-                customerName,
-                invoiceYear,
-                invoiceMonth,
-                usageDates: sortedDates,
-                usageDatesDisplay: sortedDates.join(', '),
-                startDay,
-                endDay,
-                daysDiff,
-                utilities,
-                utilitiesQuantity,
-                breakfast,
-                breakfastQuantity,
-                lunch,
-                lunchQuantity,
-                dinner,
-                dinnerQuantity,
-                totalAmount
-            };
-
-            // プレビューを生成
-            generateInvoiceHTML();
-
-            // プレビューセクションを表示
-            document.getElementById('previewSection').classList.remove('hidden');
-            document.getElementById('previewSection').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function generateInvoiceHTML() {
-            const today = new Date();
-            const currentYear = today.getFullYear();
-            const currentMonth = today.getMonth() + 1;
-            const currentDate = today.getDate();
-
-            let itemsHTML = '';
-            let itemNumber = 1;
-
-            // 各項目を明細に追加（数量が0より大きい場合のみ）
-            if (invoiceData.utilities > 0 && invoiceData.utilitiesQuantity > 0) {
-                itemsHTML += `
-                    <tr>
-                        <td>${itemNumber++}</td>
-                        <td>${invoiceData.invoiceMonth}/${invoiceData.startDay}～${invoiceData.invoiceMonth}/${invoiceData.endDay}</td>
-                        <td>光熱費</td>
-                        <td>${invoiceData.utilitiesQuantity}日分</td>
-                        <td>¥${invoiceData.utilities.toLocaleString()}</td>
-                        <td>¥${(invoiceData.utilities * invoiceData.utilitiesQuantity).toLocaleString()}</td>
-                    </tr>
-                `;
-            }
-
-            if (invoiceData.breakfast > 0 && invoiceData.breakfastQuantity > 0) {
-                itemsHTML += `
-                    <tr>
-                        <td>${itemNumber++}</td>
-                        <td>${invoiceData.invoiceMonth}/${invoiceData.startDay}～${invoiceData.invoiceMonth}/${invoiceData.endDay}</td>
-                        <td>朝食代</td>
-                        <td>${invoiceData.breakfastQuantity}日分</td>
-                        <td>¥${invoiceData.breakfast.toLocaleString()}</td>
-                        <td>¥${(invoiceData.breakfast * invoiceData.breakfastQuantity).toLocaleString()}</td>
-                    </tr>
-                `;
-            }
-
-            if (invoiceData.lunch > 0 && invoiceData.lunchQuantity > 0) {
-                itemsHTML += `
-                    <tr>
-                        <td>${itemNumber++}</td>
-                        <td>${invoiceData.invoiceMonth}/${invoiceData.startDay}～${invoiceData.invoiceMonth}/${invoiceData.endDay}</td>
-                        <td>昼食代</td>
-                        <td>${invoiceData.lunchQuantity}日分</td>
-                        <td>¥${invoiceData.lunch.toLocaleString()}</td>
-                        <td>¥${(invoiceData.lunch * invoiceData.lunchQuantity).toLocaleString()}</td>
-                    </tr>
-                `;
-            }
-
-            if (invoiceData.dinner > 0 && invoiceData.dinnerQuantity > 0) {
-                itemsHTML += `
-                    <tr>
-                        <td>${itemNumber++}</td>
-                        <td>${invoiceData.invoiceMonth}/${invoiceData.startDay}～${invoiceData.invoiceMonth}/${invoiceData.endDay}</td>
-                        <td>夕食代</td>
-                        <td>${invoiceData.dinnerQuantity}日分</td>
-                        <td>¥${invoiceData.dinner.toLocaleString()}</td>
-                        <td>¥${(invoiceData.dinner * invoiceData.dinnerQuantity).toLocaleString()}</td>
-                    </tr>
-                `;
-            }
-
-            // 空行を追加（最大3行まで）
-            const emptyRows = Math.max(0, 3 - (itemNumber - 1));
-            for (let i = 0; i < emptyRows; i++) {
-                itemsHTML += '<tr style="height: 30px;"><td colspan="6"></td></tr>';
-            }
-
-            const invoiceHTML = `
-                <div class="invoice-header">
-                    <h2>請 求 書</h2>
-                    <p>R${invoiceData.invoiceYear}年 ${invoiceData.invoiceMonth}月 ${currentDate}日</p>
-                </div>
-
-                <div class="invoice-info" style="display: flex; justify-content: space-between; align-items: flex-start;">
-                    <div>
-                        <p><strong>${invoiceData.customerName} 様</strong></p>
-                        <p>下記のとおり請求申し上げます</p>
-                    </div>
-                    <div style="text-align: right; max-width: 300px;">
-                        <p>合同会社renge ショートステイSHUKUSAI</p>
-                        <p>住所：福岡県田川市大字伊田517-1</p>
-                        <p>電話番号：090-9495-5524（担当　中島勇太）</p>
-                        <p>または 0948-52-6675</p>
-                    </div>
-                    <div style="margin-left: 20px;">
-                        <img src="inkan.png" alt="印鑑" style="width: 70px; height: auto;">
-                    </div>
-                </div>
-
-                <div style="text-align: center; margin: 20px 0;">
-                    <p style="font-size: 18px;"><strong>請求合計金額　¥${invoiceData.totalAmount.toLocaleString()}</strong></p>
-                </div>
-
-                <table class="invoice-table">
-                    <thead>
-                        <tr>
-                            <th>項目</th>
-                            <th>月日</th>
-                            <th>品名</th>
-                            <th>数量</th>
-                            <th>単価(税込・税外)</th>
-                            <th>金額</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${itemsHTML}
-                    </tbody>
-                </table>
-
-                <div class="total-section">
-                    <p>合　計　¥${invoiceData.totalAmount.toLocaleString()}</p>
-                    <p style="margin-top: 10px; font-size: 14px;">利用日：${invoiceData.usageDatesDisplay}日（${invoiceData.daysDiff}日間）</p>
-                </div>
-            `;
-
-            document.getElementById('invoicePreview').innerHTML = invoiceHTML;
-        }
-
-        function printInvoice()　{
-            // 新しいウィンドウを開く
-            const printWindow = window.open('', '_blank', 'width=800,height=800');
-            
-            // 新しいウィンドウのドキュメントに書き込む
-            printWindow.document.write(`
-                <!DOCTYPE html>
-                <html lang="ja">
-                <head>
-                    <meta charset="UTF-8">
-                    <title>請求書プレビュー - ショートステイSHUKUSAI</title>
-                    <style>
-                        body {
-                            margin: 0;
-                            padding: 20px;
-                            background: white;
-                            font-family: 'Hiragino Kaku Gothic Pro', 'ヒラギノ角ゴ Pro', 'Yu Gothic Medium', '游ゴシック Medium', 'Meiryo', メイリオ, 'MS Gothic', sans-serif;
-                        }
-                        .invoice-preview {
-                            width: 100%;
-                            max-width: 800px;
-                            margin: 0 auto;
-                            background: white;
-                            padding: 40px;
-                            font-family: 'MS Gothic', monospace;
-                        }
-                        .invoice-header {
-                            text-align: center;
-                            margin-bottom: 35px;
-                        }
-                        .invoice-header h2 {
-                            font-size: 28px;
-                            margin-bottom: 15px;
-                            color: #2d3748;
-                        }
-                        .invoice-table {
-                            width: 100%;
-                            border-collapse: collapse;
-                            margin-bottom: 25px;
-                            font-size: 14px;
-                        }
-                        .invoice-table th, .invoice-table td {
-                            border: 1px solid #cbd5e0;
-                            padding: 12px 8px;
-                            text-align: center;
-                        }
-                        .invoice-table th {
-                            background: #f7fafc;
-                            font-weight: bold;
-                            color: #2d3748;
-                        }
-                        .total-section {
-                            text-align: right;
-                            font-size: 20px;
-                            font-weight: bold;
-                            margin-top: 25px;
-                            padding: 20px;
-                            background: #f8faff;
-                            border-radius: 16px;
-                            border-left: 5px solid #667eea;
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="invoice-preview">
-                        ${document.getElementById('invoicePreview').innerHTML}
-                    </div>
-                </body>
-                </html>
-            `);
-            
-            // ドキュメントを閉じる
-            printWindow.document.close();
-        }
-
-        function editInvoice() {
-            document.getElementById('previewSection').classList.add('hidden');
-            document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // チェックボックスと数量の連動処理
-        function setupCheckboxHandlers() {
-            const checkboxes = [
-                { checkbox: 'excludeUtilities', price: 'utilities', quantity: 'utilitiesQuantity' },
-                { checkbox: 'excludeBreakfast', price: 'breakfast', quantity: 'breakfastQuantity' },
-                { checkbox: 'excludeLunch', price: 'lunch', quantity: 'lunchQuantity' },
-                { checkbox: 'excludeDinner', price: 'dinner', quantity: 'dinnerQuantity' }
-            ];
-
-            checkboxes.forEach(({ checkbox, price, quantity }) => {
-                const checkboxEl = document.getElementById(checkbox);
-                const priceEl = document.getElementById(price);
-                const quantityEl = document.getElementById(quantity);
-
-                checkboxEl.addEventListener('change', function() {
-                    if (this.checked) {
-                        priceEl.value = '0';
-                        quantityEl.value = '0';
-                        priceEl.disabled = true;
-                        quantityEl.disabled = true;
-                        priceEl.style.opacity = '0.5';
-                        quantityEl.style.opacity = '0.5';
-                    } else {
-                        priceEl.disabled = false;
-                        quantityEl.disabled = false;
-                        priceEl.style.opacity = '1';
-                        quantityEl.style.opacity = '1';
-                    }
-                });
-            });
-        }
-
-        // 利用日数と数量の自動同期
-        function syncQuantitiesWithUsageDays() {
-            const usageDatesInput = document.getElementById('usageDates');
-            
-            usageDatesInput.addEventListener('input', function() {
-                const usageDatesStr = this.value.replace(/\s+/g, '');
-                const usageDatesArray = usageDatesStr.split(',').map(day => parseInt(day.trim())).filter(day => !isNaN(day) && day >= 1 && day <= 31);
-                const dayCount = usageDatesArray.length;
-
-                // 除外されていない項目の数量を利用日数に自動設定
-                if (!document.getElementById('excludeUtilities').checked) {
-                    document.getElementById('utilitiesQuantity').value = dayCount;
-                }
-                if (!document.getElementById('excludeBreakfast').checked) {
-                    document.getElementById('breakfastQuantity').value = dayCount;
-                }
-                if (!document.getElementById('excludeLunch').checked) {
-                    document.getElementById('lunchQuantity').value = dayCount;
-                }
-                if (!document.getElementById('excludeDinner').checked) {
-                    document.getElementById('dinnerQuantity').value = dayCount;
-                }
-            });
-        }
-
-        // 初期設定
-        window.onload = function() {
-            const today = new Date();
-            
-            // 現在の年月を自動設定
-            const reiwaYear = today.getFullYear() - 2018; // 令和元年は2019年
-            document.getElementById('invoiceYear').value = reiwaYear;
-            document.getElementById('invoiceMonth').value = (today.getMonth() + 1).toString();
-
-            // イベントハンドラーを設定
-            setupCheckboxHandlers();
-            syncQuantitiesWithUsageDays();
-        };
-    </script>
+    <footer class="mt-8 text-center text-slate-500 text-sm">
+        <p>ふふ。さすが脅迫文を書いただけあるでしょ。じっくり読んだ？読んでないよね笑　君たちは僕の存在意義を奪った　君たちがここに存在している意味はない　わかったら失せろ　反吐が出る　そして二度と僕の前に現れるな　君たちがここに存在している限り、この呪いは続く</p>
+    </footer>
 </body>
 </html>
