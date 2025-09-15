@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ショートステイSHUKUSAI 請求書作成システム v1.2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Hiragino Kaku Gothic Pro', 'ヒラギノ角ゴ Pro', 'Yu Gothic Medium', '游ゴシック Medium', 'Meiryo', メイリオ, 'MS Gothic', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.12), 0 10px 30px rgba(0,0,0,0.08);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 12px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            opacity: 0.95;
+            font-size: 18px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-section {
+            padding: 50px;
+            background: linear-gradient(180deg, #fafbff 0%, #ffffff 100%);
+        }
+
+        .form-group {
+            margin-bottom: 35px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 700;
+            color: #2d3748;
+            font-size: 17px;
+            letter-spacing: 0.3px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 18px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 16px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #ffffff;
+            font-family: inherit;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1), 0 4px 12px rgba(102, 126, 234, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 18px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 16px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #ffffff;
+            resize: vertical;
+            font-family: inherit;
+            min-height: 100px;
+        }
+
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1), 0 4px 12px rgba(102, 126, 234, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .cost-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .cost-item {
+            background: linear-gradient(145deg, #ffffff 0%, #f8faff 100%);
+            padding: 28px;
+            border-radius: 20px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cost-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .cost-item:hover {
+            border-color: #667eea;
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.15);
+        }
+
+        .cost-item:hover::before {
+            transform: scaleX(1);
+        }
+
+        .cost-item-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .cost-item-header .icon {
+            font-size: 28px;
+            margin-right: 12px;
+        }
+
+        .cost-item-header label {
+            color: #2d3748;
+            font-weight: 700;
+            font-size: 18px;
+            margin: 0;
+        }
+
+        .cost-inputs {
+            display: grid;
+            grid-template-columns: 1fr 80px;
+            gap: 15px;
+            align-items: end;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-group label {
+            font-size: 14px;
+            color: #718096;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .input-group input {
+            margin: 0;
+        }
+
+        .quantity-input {
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 15px;
+            padding: 12px 16px;
+            background: #f7fafc;
+            border-radius: 12px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            transform: scale(1.3);
+            accent-color: #667eea;
+        }
+
+        .checkbox-group label {
+            font-size: 14px;
+            color: #4a5568;
+            margin: 0;
+        }
+
+        .preview-section {
+            background: linear-gradient(180deg, #f8faff 0%, #ffffff 100%);
+            padding: 40px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .preview-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .preview-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .invoice-preview {
+            background: white;
+            border: 3px solid #667eea;
+            border-radius: 20px;
+            padding: 40px;
+            font-family: 'MS Gothic', monospace;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.1);
+        }
+
+        .invoice-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .invoice-header h2 {
+            font-size: 28px;
+            margin-bottom: 15px;
+            color: #2d3748;
+        }
+
+        .invoice-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 35px;
+        }
+
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .invoice-table th, .invoice-table td {
+            border: 1px solid #cbd5e0;
+            padding: 12px 8px;
+            text-align: center;
+        }
+
+        .invoice-table th {
+            background: linear-gradient(180deg, #f7fafc 0%, #edf2f7 100%);
+            font-weight: bold;
+            color: #2d3748;
+        }
+
+        .total-section {
+            text-align: right;
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 25px;
+            padding: 20px;
+            background: linear-gradient(145deg, #f8faff 0%, #edf2f7 100%);
+            border-radius: 16px;
+            border-left: 5px solid #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .btn {
+            padding: 18px 36px;
+            border: none;
+            border-radius: 16px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-family: inherit;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            box-shadow: 0 8px 20px rgba(72, 187, 120, 0.3);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(72, 187, 120, 0.4);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .small-text {
+            color: #718096;
+            font-size: 14px;
+            margin-top: 8px;
+            display: block;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 20px;
+            }
+            
+            .form-section {
+                padding: 30px 25px;
+            }
+            
+            .cost-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+    <div class="header">
+  <h1>📋 請求書作成システム</h1>
+  <p>ショートステイSHUKUSAI専用</p>
+  <span class="version">v1.2</span> <!-- これを追加 -->
+</div>
+
+
+        <div class="form-section">
+            <form id="invoiceForm">
+                <div class="form-group">
+                    <label for="customerName">利用者名</label>
+                    <input type="text" id="customerName" placeholder="例：田中太郎" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="invoiceYear">請求年（令和）</label>
+                    <input type="number" id="invoiceYear" placeholder="例：7" min="1" max="99" required>
+                    <small class="small-text">令和の年数を入力してください（例：令和7年の場合は「7」）</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="invoiceMonth">請求月</label>
+                    <select id="invoiceMonth" required>
+                        <option value="">月を選択</option>
+                        <option value="1">1月</option>
+                        <option value="2">2月</option>
+                        <option value="3">3月</option>
+                        <option value="4">4月</option>
+                        <option value="5">5月</option>
+                        <option value="6">6月</option>
+                        <option value="7">7月</option>
+                        <option value="8">8月</option>
+                        <option value="9">9月</option>
+                        <option value="10">10月</option>
+                        <option value="11">11月</option>
+                        <option value="12">12月</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="usageDates">利用日</label>
+                    <textarea id="usageDates" placeholder="例：1, 3, 5, 7, 10, 12, 15, 18, 20, 22, 25&#13;&#10;または&#13;&#10;1,3,5,7,10,12,15,18,20,22,25&#13;&#10;（カンマ区切りで入力[...]"></textarea>
+                    <small class="small-text">利用する日付を数字でカンマ区切りで入力してください（例：1, 3, 5, 7）</small>
+                </div>
+
+                <div class="form-group">
+                    <label>費用設定</label>
+                    <div class="cost-grid">
+                        <div class="cost-item">
+                            <div class="cost-item-header">
+                                <span class="icon">💡</span>
+                                <label>光熱費</label>
+                            </div>
+                            <div class="cost-inputs">
+                                <div class="input-group">
+                                    <label>1日あたりの単価</label>
+                                    <input type="number" id="utilities" placeholder="例：500" min="0" required>
+                                </div>
+                                <div class="input-group">
+                                    <label>日数</label>
+                                    <input type="number" id="utilitiesQuantity" class="quantity-input" placeholder="0" min="0" max="31">
+                                </div>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="excludeUtilities">
+                                <label for="excludeUtilities">光熱費を除外する</label>
+                            </div>
+                        </div>
+
+                        <div class="cost-item">
+                            <div class="cost-item-header">
+                                <span class="icon">🌅</span>
+                                <label>朝食代</label>
+                            </div>
+                            <div class="cost-inputs">
+                                <div class="input-group">
+                                    <label>1日あたりの単価</label>
+                                    <input type="number" id="breakfast" placeholder="例：400" min="0" required>
+                                </div>
+                                <div class="input-group">
+                                    <label>日数</label>
+                                    <input type="number" id="breakfastQuantity" class="quantity-input" placeholder="0" min="0" max="31">
+                                </div>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="excludeBreakfast">
+                                <label for="excludeBreakfast">朝食代を除外する</label>
+                            </div>
+                        </div>
+
+                        <div class="cost-item">
+                            <div class="cost-item-header">
+                                <span class="icon">🍽️</span>
+                                <label>昼食代</label>
+                            </div>
+                            <div class="cost-inputs">
+                                <div class="input-group">
+                                    <label>1日あたりの単価</label>
+                                    <input type="number" id="lunch" placeholder="例：600" min="0" value="0">
+                                </div>
+                                <div class="input-group">
+                                    <label>日数</label>
+                                    <input type="number" id="lunchQuantity" class="quantity-input" placeholder="0" min="0" max="31">
+                                </div>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="excludeLunch">
+                                <label for="excludeLunch">昼食代を除外する</label>
+                            </div>
+                        </div>
+
+                        <div class="cost-item">
+                            <div class="cost-item-header">
+                                <span class="icon">🌙</span>
+                                <label>夕食代</label>
+                            </div>
+                            <div class="cost-inputs">
+                                <div class="input-group">
+                                    <label>1日あたりの単価</label>
+                                    <input type="number" id="dinner" placeholder="例：800" min="0" required>
+                                </div>
+                                <div class="input-group">
+                                    <label>日数</label>
+                                    <input type="number" id="dinnerQuantity" class="quantity-input" placeholder="0" min="0" max="31">
+                                </div>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="excludeDinner">
+                                <label for="excludeDinner">夕食代を除外する</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-primary" onclick="generatePreview()">
+                        ✨ プレビュー作成
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div id="previewSection" class="preview-section hidden">
+            <div class="preview-title">📄 請求書プレビュー</div>
+            <div id="invoicePreview" class="invoice-preview">
+                <!-- プレビューがここに生成されます -->
+            </div>
+            <div class="button-group">
+                <button type="button" class="btn btn-success" onclick="printInvoice()">
+                    🖨️ 印刷
+                </button>
+                <button type="button" class="btn btn-primary" onclick="editInvoice()">
+                    ✏️ 編集に戻る
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let invoiceData = {};
+
+        function generatePreview() {
+            // フォームデータを取得
+            const customerName = document.getElementById('customerName').value;
+            const invoiceYear = document.getElementById('invoiceYear').value;
+            const invoiceMonth = document.getElementById('invoiceMonth').value;
+            const usageDatesInput = document.getElementById('usageDates').value;
+            
+            // 単価と数量を個別取得
+            const utilities = parseInt(document.getElementById('utilities').value) || 0;
+            const utilitiesQuantity = document.getElementById('excludeUtilities').checked ? 0 : 
+                (parseInt(document.getElementById('utilitiesQuantity').value) || 0);
+                
+            const breakfast = parseInt(document.getElementById('breakfast').value) || 0;
+            const breakfastQuantity = document.getElementById('excludeBreakfast').checked ? 0 : 
+                (parseInt(document.getElementById('breakfastQuantity').value) || 0);
+                
+            const lunch = parseInt(document.getElementById('lunch').value) || 0;
+            const lunchQuantity = document.getElementById('excludeLunch').checked ? 0 : 
+                (parseInt(document.getElementById('lunchQuantity').value) || 0);
+                
+            const dinner = parseInt(document.getElementById('dinner').value) || 0;
+            const dinnerQuantity = document.getElementById('excludeDinner').checked ? 0 : 
+                (parseInt(document.getElementById('dinnerQuantity').value) || 0);
+
+            // バリデーション
+            if (!customerName || !invoiceYear || !invoiceMonth || !usageDatesInput.trim()) {
+                alert('すべての必須項目を入力してください。');
+                return;
+            }
+
+            // 利用日の解析
+            const usageDatesStr = usageDatesInput.replace(/\s+/g, ''); // スペースを除去
+            const usageDatesArray = usageDatesStr.split(',').map(day => parseInt(day.trim())).filter(day => !isNaN(day) && day >= 1 && day <= 31);
+            
+            if (usageDatesArray.length === 0) {
+                alert('有効な利用日を入力してください。（1-31の数字をカンマ区切りで入力）');
+                return;
+            }
+
+            // 利用日数
+            const daysDiff = usageDatesArray.length;
+
+            // 利用日の範囲を取得（表示用）
+            const sortedDates = [...usageDatesArray].sort((a, b) => a - b);
+            const startDay = Math.min(...sortedDates);
+            const endDay = Math.max(...sortedDates);
+
+            // 合計金額計算
+            const totalAmount = (utilities * utilitiesQuantity) + (breakfast * breakfastQuantity) + 
+                              (lunch * lunchQuantity) + (dinner * dinnerQuantity);
+
+            // 請求書データを保存
+            invoiceData = {
+                customerName,
+                invoiceYear,
+                invoiceMonth,
+                usageDates: sortedDates,
+                usageDatesDisplay: sortedDates.join(', '),
+                startDay,
+                endDay,
+                daysDiff,
+                utilities,
+                utilitiesQuantity,
+                breakfast,
+                breakfastQuantity,
+                lunch,
+                lunchQuantity,
+                dinner,
+                dinnerQuantity,
+                totalAmount
+            };
+
+            // プレビューを生成
+            generateInvoiceHTML();
+
+            // プレビューセクションを表示
+            document.getElementById('previewSection').classList.remove('hidden');
+            document.getElementById('previewSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function generateInvoiceHTML() {
+            const today = new Date();
+            const currentYear = today.getFullYear();
+            const currentMonth = today.getMonth() + 1;
+            const currentDate = today.getDate();
+
+            let itemsHTML = '';
+            let itemNumber = 1;
+
+            // 各項目を明細に追加（数量が0より大きい場合のみ）
+            if (invoiceData.utilities > 0 && invoiceData.utilitiesQuantity > 0) {
+                itemsHTML += `
+                    <tr>
+                        <td>${itemNumber++}</td>
+                        <td>${invoiceData.invoiceMonth}/${invoiceData.startDay}～${invoiceData.invoiceMonth}/${invoiceData.endDay}</td>
+                        <td>光熱費</td>
+                        <td>${invoiceData.utilitiesQuantity}日分</td>
+                        <td>¥${invoiceData.utilities.toLocaleString()}</td>
+                        <td>¥${(invoiceData.utilities * invoiceData.utilitiesQuantity).toLocaleString()}</td>
+                    </tr>
+                `;
+            }
+
+            if (invoiceData.breakfast > 0 && invoiceData.breakfastQuantity > 0) {
+                itemsHTML += `
+                    <tr>
+                        <td>${itemNumber++}</td>
+                        <td>${invoiceData.invoiceMonth}/${invoiceData.startDay}～${invoiceData.invoiceMonth}/${invoiceData.endDay}</td>
+                        <td>朝食代</td>
+                        <td>${invoiceData.breakfastQuantity}日分</td>
+                        <td>¥${invoiceData.breakfast.toLocaleString()}</td>
+                        <td>¥${(invoiceData.breakfast * invoiceData.breakfastQuantity).toLocaleString()}</td>
+                    </tr>
+                `;
+            }
+
+            if (invoiceData.lunch > 0 && invoiceData.lunchQuantity > 0) {
+                itemsHTML += `
+                    <tr>
+                        <td>${itemNumber++}</td>
+                        <td>${invoiceData.invoiceMonth}/${invoiceData.startDay}～${invoiceData.invoiceMonth}/${invoiceData.endDay}</td>
+                        <td>昼食代</td>
+                        <td>${invoiceData.lunchQuantity}日分</td>
+                        <td>¥${invoiceData.lunch.toLocaleString()}</td>
+                        <td>¥${(invoiceData.lunch * invoiceData.lunchQuantity).toLocaleString()}</td>
+                    </tr>
+                `;
+            }
+
+            if (invoiceData.dinner > 0 && invoiceData.dinnerQuantity > 0) {
+                itemsHTML += `
+                    <tr>
+                        <td>${itemNumber++}</td>
+                        <td>${invoiceData.invoiceMonth}/${invoiceData.startDay}～${invoiceData.invoiceMonth}/${invoiceData.endDay}</td>
+                        <td>夕食代</td>
+                        <td>${invoiceData.dinnerQuantity}日分</td>
+                        <td>¥${invoiceData.dinner.toLocaleString()}</td>
+                        <td>¥${(invoiceData.dinner * invoiceData.dinnerQuantity).toLocaleString()}</td>
+                    </tr>
+                `;
+            }
+
+            // 空行を追加（最大3行まで）
+            const emptyRows = Math.max(0, 3 - (itemNumber - 1));
+            for (let i = 0; i < emptyRows; i++) {
+                itemsHTML += '<tr style="height: 30px;"><td colspan="6"></td></tr>';
+            }
+
+            const invoiceHTML = `
+                <div class="invoice-header">
+                    <h2>請 求 書</h2>
+                    <p>R${invoiceData.invoiceYear}年 ${invoiceData.invoiceMonth}月 ${currentDate}日</p>
+                </div>
+
+                <div class="invoice-info" style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <p><strong>${invoiceData.customerName} 様</strong></p>
+                        <p>下記のとおり請求申し上げます</p>
+                    </div>
+                    <div style="text-align: right; max-width: 300px;">
+                        <p>合同会社renge ショートステイSHUKUSAI</p>
+                        <p>住所：福岡県田川市大字伊田517-1</p>
+                        <p>電話番号：090-9495-5524（担当　中島勇太）</p>
+                        <p>または 0948-52-6675</p>
+                    </div>
+                    <div style="margin-left: 20px;">
+                        <img src="inkan.png" alt="印鑑" style="width: 70px; height: auto;">
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin: 20px 0;">
+                    <p style="font-size: 18px;"><strong>請求合計金額　¥${invoiceData.totalAmount.toLocaleString()}</strong></p>
+                </div>
+
+                <table class="invoice-table">
+                    <thead>
+                        <tr>
+                            <th>項目</th>
+                            <th>月日</th>
+                            <th>品名</th>
+                            <th>数量</th>
+                            <th>単価(税込・税外)</th>
+                            <th>金額</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${itemsHTML}
+                    </tbody>
+                </table>
+
+                <div class="total-section">
+                    <p>合　計　¥${invoiceData.totalAmount.toLocaleString()}</p>
+                    <p style="margin-top: 10px; font-size: 14px;">利用日：${invoiceData.usageDatesDisplay}日（${invoiceData.daysDiff}日間）</p>
+                </div>
+            `;
+
+            document.getElementById('invoicePreview').innerHTML = invoiceHTML;
+        }
+
+        function printInvoice()　{
+            // 新しいウィンドウを開く
+            const printWindow = window.open('', '_blank', 'width=800,height=800');
+            
+            // 新しいウィンドウのドキュメントに書き込む
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html lang="ja">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>請求書プレビュー - ショートステイSHUKUSAI</title>
+                    <style>
+                        body {
+                            margin: 0;
+                            padding: 20px;
+                            background: white;
+                            font-family: 'Hiragino Kaku Gothic Pro', 'ヒラギノ角ゴ Pro', 'Yu Gothic Medium', '游ゴシック Medium', 'Meiryo', メイリオ, 'MS Gothic', sans-serif;
+                        }
+                        .invoice-preview {
+                            width: 100%;
+                            max-width: 800px;
+                            margin: 0 auto;
+                            background: white;
+                            padding: 40px;
+                            font-family: 'MS Gothic', monospace;
+                        }
+                        .invoice-header {
+                            text-align: center;
+                            margin-bottom: 35px;
+                        }
+                        .invoice-header h2 {
+                            font-size: 28px;
+                            margin-bottom: 15px;
+                            color: #2d3748;
+                        }
+                        .invoice-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-bottom: 25px;
+                            font-size: 14px;
+                        }
+                        .invoice-table th, .invoice-table td {
+                            border: 1px solid #cbd5e0;
+                            padding: 12px 8px;
+                            text-align: center;
+                        }
+                        .invoice-table th {
+                            background: #f7fafc;
+                            font-weight: bold;
+                            color: #2d3748;
+                        }
+                        .total-section {
+                            text-align: right;
+                            font-size: 20px;
+                            font-weight: bold;
+                            margin-top: 25px;
+                            padding: 20px;
+                            background: #f8faff;
+                            border-radius: 16px;
+                            border-left: 5px solid #667eea;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="invoice-preview">
+                        ${document.getElementById('invoicePreview').innerHTML}
+                    </div>
+                </body>
+                </html>
+            `);
+            
+            // ドキュメントを閉じる
+            printWindow.document.close();
+        }
+
+        function editInvoice() {
+            document.getElementById('previewSection').classList.add('hidden');
+            document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // チェックボックスと数量の連動処理
+        function setupCheckboxHandlers() {
+            const checkboxes = [
+                { checkbox: 'excludeUtilities', price: 'utilities', quantity: 'utilitiesQuantity' },
+                { checkbox: 'excludeBreakfast', price: 'breakfast', quantity: 'breakfastQuantity' },
+                { checkbox: 'excludeLunch', price: 'lunch', quantity: 'lunchQuantity' },
+                { checkbox: 'excludeDinner', price: 'dinner', quantity: 'dinnerQuantity' }
+            ];
+
+            checkboxes.forEach(({ checkbox, price, quantity }) => {
+                const checkboxEl = document.getElementById(checkbox);
+                const priceEl = document.getElementById(price);
+                const quantityEl = document.getElementById(quantity);
+
+                checkboxEl.addEventListener('change', function() {
+                    if (this.checked) {
+                        priceEl.value = '0';
+                        quantityEl.value = '0';
+                        priceEl.disabled = true;
+                        quantityEl.disabled = true;
+                        priceEl.style.opacity = '0.5';
+                        quantityEl.style.opacity = '0.5';
+                    } else {
+                        priceEl.disabled = false;
+                        quantityEl.disabled = false;
+                        priceEl.style.opacity = '1';
+                        quantityEl.style.opacity = '1';
+                    }
+                });
+            });
+        }
+
+        // 利用日数と数量の自動同期
+        function syncQuantitiesWithUsageDays() {
+            const usageDatesInput = document.getElementById('usageDates');
+            
+            usageDatesInput.addEventListener('input', function() {
+                const usageDatesStr = this.value.replace(/\s+/g, '');
+                const usageDatesArray = usageDatesStr.split(',').map(day => parseInt(day.trim())).filter(day => !isNaN(day) && day >= 1 && day <= 31);
+                const dayCount = usageDatesArray.length;
+
+                // 除外されていない項目の数量を利用日数に自動設定
+                if (!document.getElementById('excludeUtilities').checked) {
+                    document.getElementById('utilitiesQuantity').value = dayCount;
+                }
+                if (!document.getElementById('excludeBreakfast').checked) {
+                    document.getElementById('breakfastQuantity').value = dayCount;
+                }
+                if (!document.getElementById('excludeLunch').checked) {
+                    document.getElementById('lunchQuantity').value = dayCount;
+                }
+                if (!document.getElementById('excludeDinner').checked) {
+                    document.getElementById('dinnerQuantity').value = dayCount;
+                }
+            });
+        }
+
+        // 初期設定
+        window.onload = function() {
+            const today = new Date();
+            
+            // 現在の年月を自動設定
+            const reiwaYear = today.getFullYear() - 2018; // 令和元年は2019年
+            document.getElementById('invoiceYear').value = reiwaYear;
+            document.getElementById('invoiceMonth').value = (today.getMonth() + 1).toString();
+
+            // イベントハンドラーを設定
+            setupCheckboxHandlers();
+            syncQuantitiesWithUsageDays();
+        };
+    </script>
+</body>
+</html>
